@@ -1,0 +1,20 @@
+{
+    "name": "harbyn/php2shell-demo",
+    "description": "A small PHP app pinned to PHP releases affected by PHP2Shell, for a Harbyn demonstration.",
+    "type": "project",
+    "license": "Apache-2.0",
+    "require": {
+        "php": "^8.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Demo\\": "src/"
+        }
+    },
+    "config": {
+        "platform": {
+            "php": "8.3.35"
+        },
+        "sort-packages": true
+    }
+}

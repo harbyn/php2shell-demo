@@ -1,0 +1,9 @@
+services:
+  app:
+    build: .
+  queue:
+    image: php:8.4-cli
+    working_dir: /app
+    volumes:
+      - ./:/app
+    command: ["php", "-r", "require 'src/Greeting.php'; echo (new Demo\Greeting())->hello('queue'), PHP_EOL;"]
