@@ -1,0 +1,38 @@
+name: harbyn
+on:
+  push:
+    branches: ["main"]
+  schedule:
+    - cron: "0 6 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write # fix branches (remediate)
+  id-token: write # GitHub signs a token proving which repository uploads
+  pull-requests: write # fix pull requests (remediate)
+
+jobs:
+  harbyn:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/cache/restore@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/harbyn-engine-cache
+          key: harbyn-engine-${{ github.run_id }}
+          restore-keys: harbyn-engine-
+      - uses: harbyn/cli@7ff15f7dd9c1f6485ff6fa34e8945e6f0479ab30 # v0.16.0
+        id: harbyn
+        with:
+          upload: true
+          connection: 29a55df5-2fe8-4cf2-89c2-7a007ea5cfe0
+          inventory: true
+          remediate: true
+      - if: ${{ always() && steps.harbyn.outputs.engine-cache-key != '' }}
+        uses: actions/cache/save@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ${{ runner.temp }}/harbyn-engine-cache
+          key: harbyn-engine-${{ steps.harbyn.outputs.engine-cache-key }}
